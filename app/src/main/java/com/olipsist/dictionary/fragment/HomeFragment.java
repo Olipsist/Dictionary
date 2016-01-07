@@ -117,13 +117,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("TEST", "CLICK");
-//                Cursor cursorTest =  adapter.getCursor();
-//                cursorTest.moveToPosition(position);
-//                DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),null);
-//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//                transaction.replace(R.id.fragment, detailFragment);
-//                transaction.addToBackStack(null);
-//                transaction.commit();
+                Cursor cursorTest =  adapter.getCursor();
+                cursorTest.moveToPosition(position);
+                DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),null);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment, detailFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
 
             }
         });
