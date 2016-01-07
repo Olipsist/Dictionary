@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.olipsist.dictionary.fragment.DetailFragment"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="TEST"
+        android:id="@+id/wordTextView_detail"
+        android:layout_gravity="left|top"
+        android:textColor="#000000"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp" />
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="476dp"
+        android:id="@+id/listView_detail"
+        android:layout_gravity="center_horizontal|bottom" />
+</LinearLayout>
