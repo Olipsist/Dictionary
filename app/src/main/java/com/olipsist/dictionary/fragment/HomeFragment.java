@@ -121,8 +121,8 @@ public class HomeFragment extends Fragment {
                 cursorTest.moveToPosition(position);
                 DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),null);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment, detailFragment);
-                transaction.addToBackStack(null);
+                transaction.replace(null, detailFragment);
+                transaction.addToBackStack(null);test
                 transaction.commit();
 
             }
