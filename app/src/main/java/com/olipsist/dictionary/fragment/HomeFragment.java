@@ -26,14 +26,7 @@ import com.olipsist.dictionary.R;
 import com.olipsist.dictionary.dao.MyDbHelper;
 import com.olipsist.dictionary.util.MyCursorAdapter;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HomeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -124,13 +117,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i("TEST", "CLICK");
-                Cursor cursorTest =  adapter.getCursor();
-                cursorTest.moveToPosition(position);
-                DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),null);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment, detailFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+//                Cursor cursorTest =  adapter.getCursor();
+//                cursorTest.moveToPosition(position);
+//                DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),null);
+//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//                transaction.replace(R.id.fragment, detailFragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
 
             }
         });
