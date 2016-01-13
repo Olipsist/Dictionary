@@ -2,30 +2,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.olipsist.dictionary.fragment.HomeFragment">
+    tools:context="com.olipsist.dictionary.fragment.HomeFragment"
+    android:id="@+id/rootViewHome">
 
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="361dp"
+        android:layout_height="match_parent"
         android:layout_gravity="left|top"
         android:weightSum="1">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/searchEditText"
-            android:layout_gravity="center_horizontal"
-            android:text="TEST" />
+            android:id="@+id/searchEditText" />
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/resultListView"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1.58" />
+            android:layout_height="match_parent"
+            android:id="@+id/resultListView_Home" />
 
     </LinearLayout>
 

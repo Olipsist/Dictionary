@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.olipsist.dictionary.fragment.FevFragment;
+import com.olipsist.dictionary.fragment.FavFragment;
 import com.olipsist.dictionary.fragment.HomeFragment;
 
 /**
@@ -29,7 +29,7 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0: resultFragment = HomeFragment.newInstance(null,null);
                 break;
-            case 1: resultFragment = FevFragment.newInstance(null,null);
+            case 1: resultFragment = FavFragment.newInstance(null, null);
                 break;
         }
 

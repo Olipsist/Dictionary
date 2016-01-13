@@ -3,15 +3,12 @@ package com.olipsist.dictionary.fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +16,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.olipsist.dictionary.R;
 import com.olipsist.dictionary.dao.MyDbHelper;
@@ -49,15 +44,6 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -77,12 +63,11 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         initView(inflater.getContext(), rootView);
-
         openDatabase();
         Cursor cursor = helper.findAllWord(db);
         cursor.moveToFirst();
@@ -114,14 +99,19 @@ public class HomeFragment extends Fragment {
         });
 
         resultListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("TEST", "CLICK");
                 Cursor cursorTest =  adapter.getCursor();
                 cursorTest.moveToPosition(position);
-                DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),null);
+
+                String idWord = cursorTest.getString(cursorTest.getColumnIndex("id"));
+                String word = cursorTest.getString(cursorTest.getColumnIndex("esearch"));
+
+                DetailFragment detailFragment = DetailFragment.newInstance(word,idWord);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.test, detailFragment);
+
+                transaction.replace(R.id.rootViewHome, detailFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
 
@@ -132,7 +122,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initView(Context context, View rootView){
-        resultListView = (ListView)rootView.findViewById(R.id.resultListView);
+        resultListView = (ListView)rootView.findViewById(R.id.resultListView_Home);
         searchEditText = (EditText)rootView.findViewById(R.id.searchEditText);
         this.context = context;
         helper = new MyDbHelper(context);
