@@ -1,15 +1,20 @@
 package com.olipsist.dictionary;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.olipsist.dictionary.dao.MyDbHelper;
+import com.olipsist.dictionary.fragment.DetailFragment;
+import com.olipsist.dictionary.fragment.FavFragment;
+import com.olipsist.dictionary.fragment.HomeFragment;
 import com.olipsist.dictionary.util.FragmentPageAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DetailFragment.OnFragmentInteractionListener,FavFragment.OnFragmentInteractionListener{
 
     private SQLiteDatabase db;
     private MyDbHelper helper;
@@ -32,4 +37,10 @@ public class MainActivity extends AppCompatActivity {
         db = helper.getWritableDatabase();
     }
 
+    @Override
+    public void onFragmentInteraction(String name) {
+        Log.i("TEST INTERFACE",name);
+        FavFragment favFragment = (FavFragment) getSupportFragmentManager().findFragmentById(R.id.viewpager);
+        favFragment.reflashView();
+    }
 }

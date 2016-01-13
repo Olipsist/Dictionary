@@ -45,4 +45,6 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return tabTitle[position];
     }
+
+
 }

@@ -30,6 +30,7 @@ public class FavFragment extends Fragment {
     private SQLiteDatabase db;
     private ListView resultListView;
     private MyCursorAdapter adapter;
+    private OnFragmentInteractionListener mListener;
 
     public FavFragment() {
         // Required empty public constructor
@@ -60,10 +61,7 @@ public class FavFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_fav, container, false);
         initView(inflater.getContext(), rootView);
-        Cursor cursor = helper.findAllFevWord(db);
-        cursor.moveToFirst();
-        adapter = new MyCursorAdapter(inflater.getContext(),cursor,0);
-        resultListView.setAdapter(adapter);
+        reflashView();
 
         resultListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,43 +86,30 @@ public class FavFragment extends Fragment {
         db = helper.getWritableDatabase();
         resultListView = (ListView) rootView.findViewById(R.id.resultListView_Fav);
     }
-//
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p/>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+
+    public void reflashView(){
+        if(adapter != null){
+            adapter.getCursor().close();
+        }
+        Cursor cursor = helper.findAllFevWord(db);
+        cursor.moveToFirst();
+        adapter = new MyCursorAdapter(this.getContext(),cursor,0);
+        resultListView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(String name);
+    }
 }

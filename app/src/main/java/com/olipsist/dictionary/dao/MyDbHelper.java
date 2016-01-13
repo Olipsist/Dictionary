@@ -58,7 +58,7 @@ public class MyDbHelper extends SQLiteAssetHelper {
     }
 
     public Cursor findAllFevWord(SQLiteDatabase db){
-        String sql = "SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai WHERE fev = 'A'";
+        String sql = "SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai WHERE fav = 'A'";
         Cursor resultCursor = db.rawQuery(sql,null);
         return resultCursor;
     }
