@@ -17,7 +17,7 @@ import com.olipsist.dictionary.dao.MyDbHelper;
 import com.olipsist.dictionary.util.MyCursorAdapter;
 
 
-public class FavFragment extends Fragment {
+public class FavFragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -70,10 +70,10 @@ public class FavFragment extends Fragment {
                 cursorTest.moveToPosition(position);
 
                 DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),String.valueOf(position));
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.rootViewFav, detailFragment);
-                transaction.addToBackStack(null);
+                transaction.addToBackStack("FAV");
                 transaction.commit();
             }
         });
@@ -109,7 +109,6 @@ public class FavFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(String name);
     }
 }

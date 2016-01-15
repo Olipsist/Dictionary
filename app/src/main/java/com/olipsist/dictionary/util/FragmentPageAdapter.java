@@ -17,6 +17,7 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
     final int pageCount = 2;
     String tabTitle[] = new String[]{"Home","FEV"};
 
+
     public FragmentPageAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;

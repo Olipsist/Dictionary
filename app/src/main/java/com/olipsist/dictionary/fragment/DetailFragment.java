@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends RootFragment {
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -147,12 +147,6 @@ public class DetailFragment extends Fragment {
     }
 
 
-    //    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -163,15 +157,10 @@ public class DetailFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
+
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String name);
     }
+
 }

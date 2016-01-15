@@ -22,7 +22,7 @@ import com.olipsist.dictionary.dao.MyDbHelper;
 import com.olipsist.dictionary.util.MyCursorAdapter;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -102,17 +102,17 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursorTest =  adapter.getCursor();
+                Cursor cursorTest = adapter.getCursor();
                 cursorTest.moveToPosition(position);
 
                 String idWord = cursorTest.getString(cursorTest.getColumnIndex("id"));
                 String word = cursorTest.getString(cursorTest.getColumnIndex("esearch"));
 
-                DetailFragment detailFragment = DetailFragment.newInstance(word,idWord);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                DetailFragment detailFragment = DetailFragment.newInstance(word, idWord);
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.rootViewHome, detailFragment);
-                transaction.addToBackStack(null);
+                transaction.addToBackStack("HOME");
                 transaction.commit();
 
             }
@@ -134,40 +134,9 @@ public class HomeFragment extends Fragment {
 
     private void closeDatabase(){
         db.close();
-
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-
-//    }
-////
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p/>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+    public void testBack(){
+        Log.i("TEST BACK","TEST BACK");
+    }
 }
