@@ -3,28 +3,21 @@ package com.olipsist.dictionary.fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.olipsist.dictionary.R;
 import com.olipsist.dictionary.dao.MyDbHelper;
 import com.olipsist.dictionary.util.DetailArrayAdapter;
-import com.olipsist.dictionary.util.DetailCursorAdapter;
 import com.olipsist.dictionary.util.DetailWord;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DetailFragment extends RootFragment {
 
@@ -40,7 +33,8 @@ public class DetailFragment extends RootFragment {
     private DetailArrayAdapter adapter;
     private ListView detailListView;
     private TextView wordTextView;
-    private ToggleButton toggleButton;
+    private MaterialFavoriteButton favoriteButton;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -49,11 +43,11 @@ public class DetailFragment extends RootFragment {
     }
 
 
-    public static DetailFragment newInstance(String param1, String param2) {
+    public static DetailFragment newInstance(String wordStr, String wordId) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, wordStr);
+        args.putString(ARG_PARAM2, wordId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,11 +72,11 @@ public class DetailFragment extends RootFragment {
         detailListView.setAdapter(adapter);
         wordTextView.setText(wordStr);
 
-        toggleButton.setOnClickListener(new View.OnClickListener() {
+        favoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
                 String favValue;
-                if (toggleButton.isChecked()){
+                if (favoriteButton.isFavorite()){
                     favValue = "A";
                 }else{
                     favValue = "W";
@@ -98,7 +92,7 @@ public class DetailFragment extends RootFragment {
     private void initView(Context context, View rootView){
         wordTextView = (TextView) rootView.findViewById(R.id.wordTextView_detail);
         detailListView = (ListView) rootView.findViewById(R.id.listView_detail);
-        toggleButton = (ToggleButton) rootView.findViewById(R.id.fevToggleButton_Detail);
+        favoriteButton = (MaterialFavoriteButton) rootView.findViewById(R.id.fevToggleButton_Detail);
         helper = new MyDbHelper(context);
         db =  helper.getWritableDatabase();
     }
@@ -123,7 +117,7 @@ public class DetailFragment extends RootFragment {
             for(int i = 0;i<cursor.getCount();i++){
                 builderEntry += cursor.getString(cursor.getColumnIndex("tentry"))+", ";
                 if(cursor.getString(cursor.getColumnIndex("fav")).equals("A")){
-                    toggleButton.setChecked(true);
+                    favoriteButton.setFavorite(true);
                 }
                 cursor.moveToNext();
             }

@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.olipsist.dictionary.fragment.HomeFragment"
+
+    tools:context=".fragment.SearchFragment"
     android:id="@+id/rootViewHome">
 
     <!-- TODO: Update blank fragment layout -->
@@ -17,7 +18,9 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/searchEditText" />
+            android:id="@+id/searchEditText"
+            android:hint="search"
+            android:textSize="22dp"/>
 
         <ListView
             android:layout_width="match_parent"

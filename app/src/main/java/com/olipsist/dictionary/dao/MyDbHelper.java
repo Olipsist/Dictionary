@@ -28,14 +28,20 @@ public class MyDbHelper extends SQLiteAssetHelper {
 
     }
 
-    public Cursor findAllWord(SQLiteDatabase db){
+    public Cursor initCursor(SQLiteDatabase db){
+        checkDbOpen(db);
+        Cursor resulutCursor = db.rawQuery("SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai WHERE id = 0 GROUP BY eng2thai.esearch",null);
+        return resulutCursor;
+    }
 
+    public Cursor findAllWord(SQLiteDatabase db){
+        checkDbOpen(db);
         Cursor resulutCursor = db.rawQuery("SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai GROUP BY eng2thai.esearch",null);
         return resulutCursor;
     }
 
     public Cursor findWordByString(SQLiteDatabase db,String str){
-
+        checkDbOpen(db);
         str += "%";
         String sql = "SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai " +
                 "WHERE eng2thai.esearch LIKE ? GROUP BY eng2thai.esearch";
@@ -44,7 +50,7 @@ public class MyDbHelper extends SQLiteAssetHelper {
     }
 
     public Cursor findWordsDetailByString(SQLiteDatabase db, String word, String cat){
-
+        checkDbOpen(db);
         String sql = "SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai " +
                 "WHERE eng2thai.esearch LIKE ? AND ecat = ?";
         Cursor resultCursor = db.rawQuery(sql,new String[]{word,cat});
@@ -52,20 +58,29 @@ public class MyDbHelper extends SQLiteAssetHelper {
     }
 
     public Cursor findTypeOfWord( SQLiteDatabase db, String word){
+        checkDbOpen(db);
         String sql = "SELECT * FROM eng2thai WHERE esearch = ? GROUP BY ecat";
         Cursor resultCursor  = db.rawQuery(sql,new String[]{word});
         return resultCursor;
     }
 
     public Cursor findAllFevWord(SQLiteDatabase db){
+        checkDbOpen(db);
         String sql = "SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai WHERE fav = 'A'";
         Cursor resultCursor = db.rawQuery(sql,null);
         return resultCursor;
     }
 
     public void setFavUpdate(SQLiteDatabase db,String id,String favValue){
+        checkDbOpen(db);
         ContentValues data = new ContentValues();
-        data.put("fav",favValue);
-        db.update("eng2thai",data,"id = ?",new String[]{id});
+        data.put("fav", favValue);
+        db.update("eng2thai", data, "id = ?", new String[]{id});
+    }
+
+    private void checkDbOpen(SQLiteDatabase db){
+        if(!db.isOpen()){
+          db = this.getWritableDatabase();
+        }
     }
 }

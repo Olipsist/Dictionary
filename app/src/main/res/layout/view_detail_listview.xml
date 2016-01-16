@@ -5,21 +5,22 @@
     android:background="#ffffff">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="cat"
         android:id="@+id/catTextView_detail"
-        android:layout_weight="1"
-        android:paddingLeft="10dp" />
+        android:layout_weight="5"
+        android:paddingLeft="10dp"
+        android:textSize="@dimen/abc_text_size_medium_material" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="tentry"
         android:id="@+id/entryTextView_detail"
-        android:layout_weight="5"
+        android:layout_weight="1"
         android:textSize="@dimen/abc_text_size_medium_material"
         android:paddingLeft="10dp" />
 

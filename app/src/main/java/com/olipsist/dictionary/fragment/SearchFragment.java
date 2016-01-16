@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,7 +21,7 @@ import com.olipsist.dictionary.dao.MyDbHelper;
 import com.olipsist.dictionary.util.MyCursorAdapter;
 
 
-public class HomeFragment extends RootFragment {
+public class SearchFragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,12 +39,12 @@ public class HomeFragment extends RootFragment {
 
 //    private OnFragmentInteractionListener mListener;
 
-    public HomeFragment() {
+    public SearchFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
+    public static SearchFragment newInstance(String param1, String param2) {
+        SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,10 +65,10 @@ public class HomeFragment extends RootFragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         initView(inflater.getContext(), rootView);
         openDatabase();
-        Cursor cursor = helper.findAllWord(db);
+        Cursor cursor = helper.initCursor(db);
         cursor.moveToFirst();
         adapter = new MyCursorAdapter(inflater.getContext(),cursor,0);
         resultListView.setAdapter(adapter);
@@ -93,7 +92,9 @@ public class HomeFragment extends RootFragment {
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
-
+                if(constraint.toString().isEmpty()){
+                    return helper.initCursor(db);
+                }
                 return helper.findWordByString(db, constraint.toString());
             }
         });
@@ -102,6 +103,7 @@ public class HomeFragment extends RootFragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                searchEditText.clearFocus();
                 Cursor cursorTest = adapter.getCursor();
                 cursorTest.moveToPosition(position);
 

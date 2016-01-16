@@ -23,14 +23,12 @@ public class FavFragment extends RootFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private MyDbHelper helper;
     private SQLiteDatabase db;
     private ListView resultListView;
     private MyCursorAdapter adapter;
-    private OnFragmentInteractionListener mListener;
 
     public FavFragment() {
         // Required empty public constructor
@@ -69,7 +67,10 @@ public class FavFragment extends RootFragment {
                 Cursor cursorTest =  adapter.getCursor();
                 cursorTest.moveToPosition(position);
 
-                DetailFragment detailFragment = DetailFragment.newInstance(cursorTest.getString(cursorTest.getColumnIndex("esearch")),String.valueOf(position));
+                String wordStr = cursorTest.getString(cursorTest.getColumnIndex("esearch"));
+                String wordId = cursorTest.getString(cursorTest.getColumnIndex("id"));
+
+                DetailFragment detailFragment = DetailFragment.newInstance(wordStr, wordId);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.rootViewFav, detailFragment);
@@ -97,18 +98,4 @@ public class FavFragment extends RootFragment {
         resultListView.setAdapter(adapter);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String name);
-    }
 }

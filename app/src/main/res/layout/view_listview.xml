@@ -8,5 +8,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/showTextView" />
+        android:id="@+id/showTextView"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
 </LinearLayout>
