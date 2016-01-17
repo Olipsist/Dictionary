@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
 
     tools:context=".fragment.SearchFragment"
-    android:id="@+id/rootViewHome">
+    android:id="@+id/rootViewSearch">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -13,14 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="left|top"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:id="@+id/search_content_view">
 
-        <EditText
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchEditText"
-            android:hint="search"
-            android:textSize="22dp"/>
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchEditText"
+                android:hint="search"
+                android:textSize="22dp"
+                android:layout_weight="8" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/backspaceButton"
+                android:src="@drawable/deleate_button"
+                android:background="@null"
+                android:layout_weight="2" />
+
+        </LinearLayout>
 
         <ListView
             android:layout_width="match_parent"

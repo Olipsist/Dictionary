@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.olipsist.dictionary.R;
@@ -22,8 +23,7 @@ import com.olipsist.dictionary.util.MyCursorAdapter;
 
 
 public class SearchFragment extends RootFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -33,11 +33,12 @@ public class SearchFragment extends RootFragment {
     private MyDbHelper helper;
     private Context context;
     private MyCursorAdapter adapter;
-    // TODO: Rename and change types of parameters
+    private ImageButton backspaceButton;
+
+    private String mParam1;
     private String mParam2;
 
 
-//    private OnFragmentInteractionListener mListener;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -56,16 +57,16 @@ public class SearchFragment extends RootFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         initView(inflater.getContext(), rootView);
         openDatabase();
         Cursor cursor = helper.initCursor(db);
@@ -92,7 +93,7 @@ public class SearchFragment extends RootFragment {
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
-                if(constraint.toString().isEmpty()){
+                if (constraint.toString().isEmpty()) {
                     return helper.initCursor(db);
                 }
                 return helper.findWordByString(db, constraint.toString());
@@ -103,7 +104,15 @@ public class SearchFragment extends RootFragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                searchEditText.clearFocus();
+
+                //hide softkeyboard
+                if (searchEditText != null) {
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                }
+                View contentView = rootView.findViewById(R.id.search_content_view);
+                contentView.setVisibility(View.INVISIBLE);
+
                 Cursor cursorTest = adapter.getCursor();
                 cursorTest.moveToPosition(position);
 
@@ -113,10 +122,18 @@ public class SearchFragment extends RootFragment {
                 DetailFragment detailFragment = DetailFragment.newInstance(word, idWord);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.rootViewHome, detailFragment);
+                transaction.replace(R.id.rootViewSearch, detailFragment);
                 transaction.addToBackStack("HOME");
                 transaction.commit();
 
+            }
+        });
+
+
+        backspaceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText("");
             }
         });
 
@@ -126,6 +143,7 @@ public class SearchFragment extends RootFragment {
     private void initView(Context context, View rootView){
         resultListView = (ListView)rootView.findViewById(R.id.resultListView_Home);
         searchEditText = (EditText)rootView.findViewById(R.id.searchEditText);
+        backspaceButton = (ImageButton)rootView.findViewById(R.id.backspaceButton);
         this.context = context;
         helper = new MyDbHelper(context);
     }
@@ -138,7 +156,4 @@ public class SearchFragment extends RootFragment {
         db.close();
     }
 
-    public void testBack(){
-        Log.i("TEST BACK","TEST BACK");
-    }
 }

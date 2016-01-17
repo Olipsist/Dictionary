@@ -1,7 +1,9 @@
 package com.olipsist.dictionary.fragment;
 
 import android.support.v4.app.Fragment;
+import android.view.View;
 
+import com.olipsist.dictionary.R;
 import com.olipsist.dictionary.util.BackPressListener;
 import com.olipsist.dictionary.util.BackPressimpl;
 
@@ -14,4 +16,9 @@ public class RootFragment extends Fragment implements BackPressListener {
     public boolean onBackPress() {
         return new BackPressimpl(this).onBackPress();
     }
+
+    public void showContentSearchView(){
+        getView().findViewById(R.id.search_content_view).setVisibility(View.VISIBLE);
+    }
+
 }

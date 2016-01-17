@@ -72,6 +72,9 @@ public class DetailFragment extends RootFragment {
         detailListView.setAdapter(adapter);
         wordTextView.setText(wordStr);
 
+//        #Hide Old Content On R.id.search_content_view
+        hideOldContentView(container);
+
         favoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
             @Override
             public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
@@ -117,7 +120,7 @@ public class DetailFragment extends RootFragment {
             for(int i = 0;i<cursor.getCount();i++){
                 builderEntry += cursor.getString(cursor.getColumnIndex("tentry"))+", ";
                 if(cursor.getString(cursor.getColumnIndex("fav")).equals("A")){
-                    favoriteButton.setFavorite(true);
+                    favoriteButton.setFavorite(true,false);
                 }
                 cursor.moveToNext();
             }
@@ -157,4 +160,11 @@ public class DetailFragment extends RootFragment {
         void onFragmentInteraction(String name);
     }
 
+    private void hideOldContentView(ViewGroup container){
+
+        View contentView = container.findViewById(R.id.search_content_view);
+        if(contentView!=null) {
+            contentView.setVisibility(View.INVISIBLE);
+        }
+    }
 }

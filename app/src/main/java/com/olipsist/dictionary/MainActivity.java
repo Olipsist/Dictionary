@@ -6,11 +6,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.olipsist.dictionary.dao.MyDbHelper;
 import com.olipsist.dictionary.fragment.DetailFragment;
 import com.olipsist.dictionary.fragment.FavFragment;
 import com.olipsist.dictionary.fragment.RootFragment;
+import com.olipsist.dictionary.fragment.SearchFragment;
 import com.olipsist.dictionary.util.FragmentPageAdapter;
 
 public class MainActivity extends AppCompatActivity implements DetailFragment.OnFragmentInteractionListener{
@@ -56,6 +58,14 @@ public class MainActivity extends AppCompatActivity implements DetailFragment.On
     @Override
     public void onBackPressed() {
         RootFragment rootFragment = (RootFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + viewPager.getCurrentItem());
+        Log.i("TAG",rootFragment.getTag());
+
+//        #check for show content in R.id.search_content_view
+        if(viewPager.getCurrentItem()==0){
+            rootFragment.showContentSearchView();
+        }
+
+//        #Check empty child
         if (!rootFragment.onBackPress()){
             super.onBackPressed();
         }
