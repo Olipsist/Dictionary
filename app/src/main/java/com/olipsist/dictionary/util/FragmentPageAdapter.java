@@ -22,6 +22,7 @@ import com.olipsist.dictionary.fragment.SearchFragment;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Olipsist on 1/6/2016.
@@ -32,10 +33,13 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
     final int pageCount = 2;
     String tabTitle[] = new String[]{"Search","Favourite"};
     int imageTitle[] = new int[]{R.drawable.ic_search_black_24px, R.drawable.ic_star_black_24px};
+    public ArrayList<Fragment> pages = new ArrayList<>();
 
     public FragmentPageAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+        pages.add(SearchFragment.newInstance(null, null));
+        pages.add(FavFragment.newInstance(null, null));
     }
 
     @Override
@@ -49,26 +53,19 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
                 break;
         }
 
-        return resultFragment;
+
+
+        return pages.get(position);
     }
 
     @Override
     public int getCount() {
-        return pageCount;
+        return pages.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        SpannableString sb = new SpannableString("   " + tabTitle[position]);
-        Resources res = context.getResources();
-        Drawable drawable = null;
-        drawable = ContextCompat.getDrawable(context,R.drawable.ic_stars_black_24dp);
-        drawable.setBounds(0, 0, 50, 50);
-
-        ImageSpan imageSpan = new ImageSpan(drawable,ImageSpan.ALIGN_BOTTOM);
-        sb.setSpan(imageSpan,0,1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        return sb;
+        return tabTitle[position];
     }
 
     public View getTabView(int position) {
@@ -79,6 +76,10 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
         ImageView img = (ImageView) v.findViewById(R.id.cusTabImageView);
         img.setImageResource(imageTitle[position]);
         return v;
+    }
+
+    public void addpage(Fragment fragment){
+        pages.add(fragment);
     }
 
 }

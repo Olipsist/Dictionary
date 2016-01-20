@@ -16,7 +16,8 @@ public class MyDbHelper extends SQLiteAssetHelper {
 
     private static final String DATABASE_NAME = "lexitron.db";
     private static final int version = 4;
-    private static final String TABLE_NAME = "TEST";
+    public static final String TABLE_ENG = "eng2thai";
+    private static final String TABLE_THAI = "thai2thai";
 
     public MyDbHelper(Context context) {
         super(context, DATABASE_NAME,null, version);
@@ -34,13 +35,13 @@ public class MyDbHelper extends SQLiteAssetHelper {
         return resulutCursor;
     }
 
-    public Cursor findAllWord(SQLiteDatabase db){
+    public Cursor findAllWord(SQLiteDatabase db, String tableName){
         checkDbOpen(db);
-        Cursor resulutCursor = db.rawQuery("SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai GROUP BY eng2thai.esearch",null);
+        Cursor resulutCursor = db.rawQuery("SELECT "+ tableName + ".id AS _id, "+ tableName +".* FROM "+ tableName +" GROUP BY esearch",null);
         return resulutCursor;
     }
 
-    public Cursor findWordByString(SQLiteDatabase db,String str){
+    public Cursor findWordByString(SQLiteDatabase db, String str, String tableName){
         checkDbOpen(db);
         str += "%";
         String sql = "SELECT eng2thai.id AS _id, eng2thai.* FROM eng2thai " +

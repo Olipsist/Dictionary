@@ -7,18 +7,26 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.olipsist.dictionary.R;
 import com.olipsist.dictionary.dao.MyDbHelper;
+import com.olipsist.dictionary.util.CheckCharLang;
 import com.olipsist.dictionary.util.MyCursorAdapter;
 
 
@@ -34,6 +42,7 @@ public class SearchFragment extends RootFragment {
     private Context context;
     private MyCursorAdapter adapter;
     private ImageButton backspaceButton;
+    private boolean isEnChar;
 
     private String mParam1;
     private String mParam2;
@@ -68,25 +77,47 @@ public class SearchFragment extends RootFragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         initView(inflater.getContext(), rootView);
-        openDatabase();
+        db = helper.getWritableDatabase();
         Cursor cursor = helper.initCursor(db);
         cursor.moveToFirst();
         adapter = new MyCursorAdapter(inflater.getContext(),cursor,0);
         resultListView.setAdapter(adapter);
-
+        ads(rootView);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
                 adapter.getFilter().filter(s.toString());
+
+                if(count == 1){
+
+                    isEnChar = CheckCharLang.checkEn(s.toString());
+
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        searchEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    Toast.makeText(getContext(),"TEST",Toast.LENGTH_SHORT).show();
+                    if(actionId == EditorInfo.IME_ACTION_DONE){
+                        searchEditText.clearFocus();
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        return true;
+                    }
+
+                return false;
             }
         });
 
@@ -96,7 +127,7 @@ public class SearchFragment extends RootFragment {
                 if (constraint.toString().isEmpty()) {
                     return helper.initCursor(db);
                 }
-                return helper.findWordByString(db, constraint.toString());
+                return helper.findWordByString(db, constraint.toString(),MyDbHelper.TABLE_ENG);
             }
         });
 
@@ -120,6 +151,7 @@ public class SearchFragment extends RootFragment {
                 String word = cursorTest.getString(cursorTest.getColumnIndex("esearch"));
 
                 DetailFragment detailFragment = DetailFragment.newInstance(word, idWord);
+
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.rootViewSearch, detailFragment);
@@ -148,12 +180,24 @@ public class SearchFragment extends RootFragment {
         helper = new MyDbHelper(context);
     }
 
-    private void openDatabase(){
-        db = helper.getWritableDatabase();
-    }
 
-    private void closeDatabase(){
-        db.close();
-    }
 
+    private void ads(View rootView){
+
+
+        AdRequest.Builder adBuilder = new AdRequest.Builder();
+        adBuilder.addTestDevice("B13BB59F7FDD1D5AED31EDB6794C6ECB");
+
+        AdRequest adRequest = adBuilder.build();
+        final AdView adView = (AdView) rootView.findViewById(R.id.adView);
+        adView.loadAd(adRequest);
+
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                super.onAdFailedToLoad(errorCode);
+                adView.setVisibility(View.GONE);
+            }
+        });
+    }
 }

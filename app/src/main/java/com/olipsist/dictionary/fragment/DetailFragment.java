@@ -3,11 +3,13 @@ package com.olipsist.dictionary.fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,7 +36,7 @@ public class DetailFragment extends RootFragment {
     private ListView detailListView;
     private TextView wordTextView;
     private MaterialFavoriteButton favoriteButton;
-
+    private ImageButton speakButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,13 +81,20 @@ public class DetailFragment extends RootFragment {
             @Override
             public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
                 String favValue;
-                if (favoriteButton.isFavorite()){
+                if (favoriteButton.isFavorite()) {
                     favValue = "A";
-                }else{
+                } else {
                     favValue = "W";
                 }
-                helper.setFavUpdate(db,wordId, favValue);
-                mListener.onFragmentInteraction("DETAIL");
+                helper.setFavUpdate(db, wordId, favValue);
+                mListener.onFragmentInteraction("DETAIL", null);
+            }
+        });
+
+        speakButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onFragmentInteraction("TTS", wordStr);
             }
         });
 
@@ -95,7 +104,8 @@ public class DetailFragment extends RootFragment {
     private void initView(Context context, View rootView){
         wordTextView = (TextView) rootView.findViewById(R.id.wordTextView_detail);
         detailListView = (ListView) rootView.findViewById(R.id.listView_detail);
-        favoriteButton = (MaterialFavoriteButton) rootView.findViewById(R.id.fevToggleButton_Detail);
+        favoriteButton = (MaterialFavoriteButton) rootView.findViewById(R.id.fevToggleButton_detail);
+        speakButton = (ImageButton) rootView.findViewById(R.id.speakButton);
         helper = new MyDbHelper(context);
         db =  helper.getWritableDatabase();
     }
@@ -111,6 +121,7 @@ public class DetailFragment extends RootFragment {
             cursorCat.moveToNext();
         }
         cursorCat.close();
+
 //        #prepareData
         ArrayList<DetailWord> resultArray = new ArrayList<>();
         for(String cat:arrayCat){
@@ -157,7 +168,7 @@ public class DetailFragment extends RootFragment {
 
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String name);
+        void onFragmentInteraction(String name, String value);
     }
 
     private void hideOldContentView(ViewGroup container){
