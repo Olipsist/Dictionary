@@ -173,7 +173,7 @@ public class DetailFragment extends RootFragment {
 
     private void hideOldContentView(ViewGroup container){
 
-        View contentView = container.findViewById(R.id.search_content_view);
+        View contentView = container.findViewById(R.id.viewpager);
         if(contentView!=null) {
             contentView.setVisibility(View.INVISIBLE);
         }

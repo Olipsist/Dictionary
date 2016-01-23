@@ -18,7 +18,7 @@ public class RootFragment extends Fragment implements BackPressListener {
     }
 
     public void showContentSearchView(){
-        getView().findViewById(R.id.search_content_view).setVisibility(View.VISIBLE);
+
     }
 
 }

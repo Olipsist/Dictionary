@@ -42,7 +42,6 @@ public class SearchFragment extends RootFragment {
     private Context context;
     private MyCursorAdapter adapter;
     private ImageButton backspaceButton;
-    private boolean isEnChar;
 
     private String mParam1;
     private String mParam2;
@@ -92,12 +91,6 @@ public class SearchFragment extends RootFragment {
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
                 adapter.getFilter().filter(s.toString());
-
-                if(count == 1){
-
-                    isEnChar = CheckCharLang.checkEn(s.toString());
-
-                }
             }
 
             @Override
@@ -141,8 +134,6 @@ public class SearchFragment extends RootFragment {
                     InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
                 }
-                View contentView = rootView.findViewById(R.id.search_content_view);
-                contentView.setVisibility(View.INVISIBLE);
 
                 Cursor cursorTest = adapter.getCursor();
                 cursorTest.moveToPosition(position);
@@ -151,8 +142,7 @@ public class SearchFragment extends RootFragment {
                 String word = cursorTest.getString(cursorTest.getColumnIndex("esearch"));
 
                 DetailFragment detailFragment = DetailFragment.newInstance(word, idWord);
-
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.rootViewSearch, detailFragment);
                 transaction.addToBackStack("HOME");

@@ -71,9 +71,9 @@ public class FavFragment extends RootFragment {
                 String wordId = cursorTest.getString(cursorTest.getColumnIndex("id"));
 
                 DetailFragment detailFragment = DetailFragment.newInstance(wordStr, wordId);
-                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.rootViewFav, detailFragment);
+                transaction.replace(R.id.view_root_main, detailFragment);
                 transaction.addToBackStack("FAV");
                 transaction.commit();
             }

@@ -88,17 +88,21 @@ public class MainActivity extends AppCompatActivity implements DetailFragment.On
     @Override
     public void onBackPressed() {
         RootFragment rootFragment = (RootFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + viewPager.getCurrentItem());
-        Log.i("TAG",rootFragment.getTag());
-
-//        #check for show content in R.id.search_content_view
-        if(viewPager.getCurrentItem()==0){
-            rootFragment.showContentSearchView();
-        }
+        Log.i("TAG", rootFragment.getTag());
+        viewPager.setVisibility(View.VISIBLE);
+////        #check for show content in R.id.search_content_view
+//        if(viewPager.getCurrentItem()==0){
+//            rootFragment.showContentSearchView();
+//
+//
+//        }
 
 //        #Check empty child
         if (!rootFragment.onBackPress()){
             super.onBackPressed();
         }
+
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

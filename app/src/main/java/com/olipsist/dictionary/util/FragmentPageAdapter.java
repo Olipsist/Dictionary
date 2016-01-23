@@ -40,6 +40,7 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
         this.context = context;
         pages.add(SearchFragment.newInstance(null, null));
         pages.add(FavFragment.newInstance(null, null));
+
     }
 
     @Override
