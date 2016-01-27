@@ -91,12 +91,12 @@ public class DetailFragment extends RootFragment {
             }
         });
 
-        speakButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onFragmentInteraction("TTS", wordStr);
-            }
-        });
+//        speakButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.onFragmentInteraction("TTS", wordStr);
+//            }
+//        });
 
         return rootView;
     }
@@ -105,7 +105,7 @@ public class DetailFragment extends RootFragment {
         wordTextView = (TextView) rootView.findViewById(R.id.wordTextView_detail);
         detailListView = (ListView) rootView.findViewById(R.id.listView_detail);
         favoriteButton = (MaterialFavoriteButton) rootView.findViewById(R.id.fevToggleButton_detail);
-        speakButton = (ImageButton) rootView.findViewById(R.id.speakButton);
+//        speakButton = (ImageButton) rootView.findViewById(R.id.speakButton);
         helper = new MyDbHelper(context);
         db =  helper.getWritableDatabase();
     }
@@ -117,7 +117,7 @@ public class DetailFragment extends RootFragment {
         cursorCat.moveToFirst();
         ArrayList<String> arrayCat = new ArrayList<>();
         for(int i = 0;i< cursorCat.getCount();i++){
-            arrayCat.add(cursorCat.getString(cursorCat.getColumnIndex("ecat")));
+            arrayCat.add(cursorCat.getString(cursorCat.getColumnIndex("cat")));
             cursorCat.moveToNext();
         }
         cursorCat.close();
@@ -129,7 +129,7 @@ public class DetailFragment extends RootFragment {
             cursor.moveToFirst();
             String builderEntry="";
             for(int i = 0;i<cursor.getCount();i++){
-                builderEntry += cursor.getString(cursor.getColumnIndex("tentry"))+", ";
+                builderEntry += cursor.getString(cursor.getColumnIndex("entry2"))+", ";
                 if(cursor.getString(cursor.getColumnIndex("fav")).equals("A")){
                     favoriteButton.setFavorite(true,false);
                 }
@@ -144,15 +144,6 @@ public class DetailFragment extends RootFragment {
         return resultArray;
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            Log.i("VISIBLE","TRUE");
-        }else{
-            Log.i("VISIBLE","FALSE");
-        }
-    }
 
 
     @Override

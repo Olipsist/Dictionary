@@ -31,7 +31,7 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
 
     Context context;
     final int pageCount = 2;
-    String tabTitle[] = new String[]{"Search","Favourite"};
+    String tabTitle[] = new String[]{"Search", "Favourite"};
     int imageTitle[] = new int[]{R.drawable.ic_search_black_24px, R.drawable.ic_star_black_24px};
     public ArrayList<Fragment> pages = new ArrayList<>();
 
@@ -44,16 +44,14 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment resultFragment = null;
-
-        switch (position){
-            case 0: resultFragment = SearchFragment.newInstance(null, null);
-                break;
-            case 1: resultFragment = FavFragment.newInstance(null, null);
-                break;
-        }
-
-
+//        Fragment resultFragment = null;
+//
+//        switch (position){
+//            case 0: resultFragment = SearchFragment.newInstance(null, null);
+//                break;
+//            case 1: resultFragment = FavFragment.newInstance(null, null);
+//                break;
+//        }
 
         return pages.get(position);
     }
@@ -77,9 +75,5 @@ public class FragmentPageAdapter extends FragmentPagerAdapter {
         img.setImageResource(imageTitle[position]);
         return v;
     }
-
-    public void addpage(Fragment fragment){
-        pages.add(fragment);
-    }
-
 }
+
