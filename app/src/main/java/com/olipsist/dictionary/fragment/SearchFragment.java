@@ -1,6 +1,7 @@
 package com.olipsist.dictionary.fragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -76,12 +77,13 @@ public class SearchFragment extends RootFragment {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_search, container, false);
         initView(inflater.getContext(), rootView);
+
         db = helper.getWritableDatabase();
         Cursor cursor = helper.initCursor(db);
         cursor.moveToFirst();
         adapter = new MyCursorAdapter(inflater.getContext(),cursor,0);
         resultListView.setAdapter(adapter);
-        ads(rootView);
+
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,7 +92,7 @@ public class SearchFragment extends RootFragment {
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s.toString());
+                adapter.getFilter().filter(String.valueOf(s));
             }
 
             @Override
@@ -102,7 +104,6 @@ public class SearchFragment extends RootFragment {
         searchEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    Toast.makeText(getContext(),"TEST",Toast.LENGTH_SHORT).show();
                     if(actionId == EditorInfo.IME_ACTION_DONE){
                         searchEditText.clearFocus();
                         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -120,7 +121,7 @@ public class SearchFragment extends RootFragment {
                 if (constraint.toString().isEmpty()) {
                     return helper.initCursor(db);
                 }
-                return helper.findWordByString(db, constraint.toString(),MyDbHelper.TABLE_ENG);
+                return helper.findWordByString(db, constraint.toString());
             }
         });
 
@@ -129,11 +130,9 @@ public class SearchFragment extends RootFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                //hide softkeyboard
-                if (searchEditText != null) {
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-                }
+
+                View contentView = rootView.findViewById(R.id.search_content_view);
+                contentView.setVisibility(View.INVISIBLE);
 
                 Cursor cursorTest = adapter.getCursor();
                 cursorTest.moveToPosition(position);
@@ -142,12 +141,18 @@ public class SearchFragment extends RootFragment {
                 String word = cursorTest.getString(cursorTest.getColumnIndex("esearch"));
 
                 DetailFragment detailFragment = DetailFragment.newInstance(word, idWord);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
                 transaction.replace(R.id.rootViewSearch, detailFragment);
                 transaction.addToBackStack("HOME");
                 transaction.commit();
 
+                //hide softkeyboard
+                if (searchEditText != null) {
+                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+                }
             }
         });
 
@@ -156,6 +161,9 @@ public class SearchFragment extends RootFragment {
             @Override
             public void onClick(View v) {
                 searchEditText.setText("");
+                searchEditText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) inflater.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
 
@@ -172,22 +180,5 @@ public class SearchFragment extends RootFragment {
 
 
 
-    private void ads(View rootView){
 
-
-        AdRequest.Builder adBuilder = new AdRequest.Builder();
-        adBuilder.addTestDevice("B13BB59F7FDD1D5AED31EDB6794C6ECB");
-
-        AdRequest adRequest = adBuilder.build();
-        final AdView adView = (AdView) rootView.findViewById(R.id.adView);
-        adView.loadAd(adRequest);
-
-        adView.setAdListener(new AdListener() {
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                super.onAdFailedToLoad(errorCode);
-                adView.setVisibility(View.GONE);
-            }
-        });
-    }
 }

@@ -33,12 +33,12 @@
             android:layout_weight="1"
             android:layout_marginTop="-5dp" />
 
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/speakButton"
-            android:layout_weight="1"
-            android:src="@drawable/speak_button" />
+        <!--<ImageButton-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/speakButton"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/speak_button" />-->
     </LinearLayout>
 
     <ListView

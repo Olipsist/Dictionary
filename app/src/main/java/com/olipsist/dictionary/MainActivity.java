@@ -1,27 +1,32 @@
 package com.olipsist.dictionary;
 
-import android.content.ActivityNotFoundException;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.AudioManager;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.DragEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.olipsist.dictionary.dao.MyDbHelper;
 import com.olipsist.dictionary.fragment.DetailFragment;
 import com.olipsist.dictionary.fragment.FavFragment;
 import com.olipsist.dictionary.fragment.RootFragment;
-import com.olipsist.dictionary.fragment.SearchFragment;
 import com.olipsist.dictionary.util.FragmentPageAdapter;
 
 
@@ -33,31 +38,72 @@ public class MainActivity extends AppCompatActivity implements DetailFragment.On
     private MyDbHelper helper;
     private ViewPager viewPager;
     private TextToSpeech tts;
+    private TabLayout tabLayout;
     final static int INTENT_CHECK_TTS = 0;
+    private FragmentPageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ads(findViewById(R.id.adView));
 
-        FragmentPageAdapter adapter = new FragmentPageAdapter(getSupportFragmentManager(),MainActivity.this);
+//        #Check Database Version
+        helper = new MyDbHelper(getApplicationContext());
+        SharedPreferences sp = getSharedPreferences("dbVersion", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        int version = sp.getInt("version",-1);
+        if(version<5){
+            helper.setForcedUpgrade(5);
+            editor.putInt("version", 5);
+            editor.commit();
+        }
+
+        adapter = new FragmentPageAdapter(getSupportFragmentManager(),MainActivity.this);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
         // Iterate over all tabs and set the custom view
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(adapter.getTabView(i));
-        }
+        customTabLayout();
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.myFAB);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                backToSearch();
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position>0){
+                    InputMethodManager imm = (InputMethodManager) MainActivity.this.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
+                    Log.i("TEST", "TEST");
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 //        #check TTS on device
-        Intent intent = new Intent();
-        intent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(intent, INTENT_CHECK_TTS);
+//        Intent intent = new Intent();
+//        intent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+//        startActivityForResult(intent, INTENT_CHECK_TTS);
+
     }
 
     @Override
@@ -88,55 +134,98 @@ public class MainActivity extends AppCompatActivity implements DetailFragment.On
     @Override
     public void onBackPressed() {
         RootFragment rootFragment = (RootFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + viewPager.getCurrentItem());
-        Log.i("TAG", rootFragment.getTag());
-        viewPager.setVisibility(View.VISIBLE);
-////        #check for show content in R.id.search_content_view
-//        if(viewPager.getCurrentItem()==0){
-//            rootFragment.showContentSearchView();
-//
-//
-//        }
+//        Log.i("TAG",rootFragment.getTag());
+
+//        #check for show content in R.id.search_content_view
+        if(viewPager.getCurrentItem()==0){
+            rootFragment.showContentSearchView();
+        }
 
 //        #Check empty child
         if (!rootFragment.onBackPress()){
-            super.onBackPressed();
-        }
-
-
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == INTENT_CHECK_TTS) {
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-
-                tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int status) {
-                        if(status == TextToSpeech.SUCCESS)
-                            tts.setLanguage(Locale.US);
-                    }
-                });
-            } else {
-
-                installTTS();
+            if(viewPager.getCurrentItem()!=0){
+                viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
+                tabLayout.setupWithViewPager(viewPager);
+                customTabLayout();
+            }else{
+                super.onBackPressed();
             }
         }
     }
+
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == INTENT_CHECK_TTS) {
+//            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+//
+//                tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+//                    @Override
+//                    public void onInit(int status) {
+//                        if(status == TextToSpeech.SUCCESS)
+//                            tts.setLanguage(Locale.US);
+//                    }
+//                });
+//            } else {
+//
+//                installTTS();
+//            }
+//        }
+//    }
 
     public void goSettingActivity(MenuItem item){
         Intent intent = new Intent(getApplication(),SettingActivity.class);
         startActivity(intent);
     }
 
-    private void installTTS(){
-        Intent intent = new Intent();
-        intent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-        startActivity(intent);
-    }
+//    private void installTTS(){
+//        Intent intent = new Intent();
+//        intent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+//        startActivity(intent);
+//    }
 
     private void updateDatabase(){
         helper = new MyDbHelper(getApplicationContext());
         db = helper.getWritableDatabase();
+    }
+
+    private void ads(View rootView){
+
+        AdRequest.Builder adBuilder = new AdRequest.Builder();
+        adBuilder.addTestDevice("B13BB59F7FDD1D5AED31EDB6794C6ECB");
+
+        AdRequest adRequest = adBuilder.build();
+        final AdView adView = (AdView) rootView;
+        adView.loadAd(adRequest);
+
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                super.onAdFailedToLoad(errorCode);
+                adView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void customTabLayout(){
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(adapter.getTabView(i));
+        }
+    }
+
+    private void backToSearch(){
+        RootFragment rootFragment = (RootFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager + ":" + 0);
+        if(viewPager.getCurrentItem()!=0) {
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
+            tabLayout.setupWithViewPager(viewPager);
+            customTabLayout();
+        }
+        rootFragment.onBackPress();
+        rootFragment.showContentSearchView();
+        EditText searchEditText = (EditText) rootFragment.getView().findViewById(R.id.searchEditText);
+        searchEditText.requestFocus();
+        searchEditText.setText("");
+        InputMethodManager imm = (InputMethodManager) this.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
     }
 
 }

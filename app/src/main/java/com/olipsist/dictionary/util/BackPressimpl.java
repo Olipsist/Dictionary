@@ -17,7 +17,6 @@ public class BackPressimpl implements BackPressListener {
 
     @Override
     public boolean onBackPress() {
-        Log.i("BACK PRESS","BACK PRESS");
         if (parentFragment == null){
             return false;
         }
