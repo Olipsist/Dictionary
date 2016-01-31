@@ -1,5 +1,7 @@
 package com.olipsist.dictionary.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,7 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -74,6 +78,7 @@ public class DetailFragment extends RootFragment {
         detailListView.setAdapter(adapter);
         wordTextView.setText(wordStr);
 
+
 //        #Hide Old Content On R.id.search_content_view
         hideOldContentView(container);
 
@@ -87,7 +92,7 @@ public class DetailFragment extends RootFragment {
                     favValue = "W";
                 }
                 helper.setFavUpdate(db, wordId, favValue);
-                mListener.onFragmentInteraction("DETAIL", null);
+                mListener.onFragmentInteraction("FAVOURITE", null);
             }
         });
 
@@ -97,6 +102,7 @@ public class DetailFragment extends RootFragment {
 //                mListener.onFragmentInteraction("TTS", wordStr);
 //            }
 //        });
+        mListener.onFragmentInteraction("DETAIL",null);
 
         return rootView;
     }
@@ -113,7 +119,7 @@ public class DetailFragment extends RootFragment {
     private ArrayList<DetailWord> prepareData(String word){
 
 //        #FindTypeOfWord
-        Cursor cursorCat = helper.findTypeOfWord(db,wordStr);
+        Cursor cursorCat = helper.findTypeOfWord(db, wordStr);
         cursorCat.moveToFirst();
         ArrayList<String> arrayCat = new ArrayList<>();
         for(int i = 0;i< cursorCat.getCount();i++){
@@ -128,14 +134,22 @@ public class DetailFragment extends RootFragment {
             Cursor cursor = helper.findWordsDetailByString(db, word, cat);
             cursor.moveToFirst();
             String builderEntry="";
+            String builderSyn="(syn. ";
             for(int i = 0;i<cursor.getCount();i++){
                 builderEntry += cursor.getString(cursor.getColumnIndex("entry2"))+", ";
+                if(!cursor.getString(cursor.getColumnIndex("syn")).isEmpty()){
+                    builderSyn += cursor.getString(cursor.getColumnIndex("syn"))+"' ";
+                }
                 if(cursor.getString(cursor.getColumnIndex("fav")).equals("A")){
                     favoriteButton.setFavorite(true,false);
                 }
                 cursor.moveToNext();
             }
             builderEntry = builderEntry.substring(0,builderEntry.length()-2);
+            if (builderSyn != "(syn. "){
+                   builderSyn = builderSyn.substring(0,builderSyn.length()-2)+")";
+                   builderEntry +=builderSyn;
+            }
             DetailWord detailWord = new DetailWord(cat, builderEntry);
             resultArray.add(detailWord);
             cursor.close();
@@ -163,10 +177,12 @@ public class DetailFragment extends RootFragment {
     }
 
     private void hideOldContentView(ViewGroup container){
-
-        View contentView = container.findViewById(R.id.search_content_view);
-        if(contentView!=null) {
-            contentView.setVisibility(View.INVISIBLE);
+        final View contentViewSearch = container.findViewById(R.id.search_content_view);
+        if(contentViewSearch!=null) {
+            contentViewSearch.setVisibility(View.INVISIBLE);
+        }else{
+            View view = container.findViewById(R.id.resultListView_Fav);
+            view.setVisibility(View.INVISIBLE);
         }
     }
 }

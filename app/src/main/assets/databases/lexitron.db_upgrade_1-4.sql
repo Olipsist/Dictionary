@@ -1,0 +1,1 @@
+UPDATE thai2eng SET esearch = "test" where id = 114147;

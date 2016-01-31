@@ -15,17 +15,16 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 public class MyDbHelper extends SQLiteAssetHelper {
 
     private static final String DATABASE_NAME = "lexitron.db";
-    private static final int version = 4;
+    private static final int DATABASE_VERSION = 4;
     private static final String TABLE_NAME = "thai2eng";
 
     public MyDbHelper(Context context) {
-        super(context, DATABASE_NAME,null, version);
+        super(context, DATABASE_NAME,null, DATABASE_VERSION);
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+//        super.onUpgrade(db, oldVersion, newVersion);
     }
 
     public Cursor initCursor(SQLiteDatabase db){
@@ -44,7 +43,7 @@ public class MyDbHelper extends SQLiteAssetHelper {
         checkDbOpen(db);
         str += "%";
         String sql = "SELECT "+TABLE_NAME+".id AS _id, "+TABLE_NAME+".* FROM "+TABLE_NAME +
-                " WHERE "+TABLE_NAME +".esearch LIKE ? GROUP BY "+TABLE_NAME+".esearch";
+                " WHERE "+TABLE_NAME +".esearch LIKE ? GROUP BY "+TABLE_NAME+".esearch ORDER BY id";
         Cursor resultCursor = db.rawQuery(sql,new String[]{str});
         return resultCursor;
     }
@@ -81,6 +80,18 @@ public class MyDbHelper extends SQLiteAssetHelper {
     private void checkDbOpen(SQLiteDatabase db){
         if(!db.isOpen()){
           db = this.getWritableDatabase();
+        }
+    }
+
+    public void update(SQLiteDatabase db){
+        Log.i("SQL", "UPGRAD");
+        String[] queries = {"UPDATE thai2eng SET esearch = REPLACE(CAST(esearch as varchar(500)),?,?);"
+                , "UPDATE thai2eng SET entry1 = REPLACE(CAST(entry1 as varchar(500)),?,?);"
+                , "UPDATE thai2eng SET entry2 = REPLACE(CAST(entry2 as varchar(500)),?,?);"};
+        for(String query:queries){
+            Cursor c = db.rawQuery(query,new String[]{"\"","'"});
+            c.moveToFirst();
+            c.close();
         }
     }
 }

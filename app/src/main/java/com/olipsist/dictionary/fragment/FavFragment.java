@@ -72,7 +72,7 @@ public class FavFragment extends RootFragment {
 
                 DetailFragment detailFragment = DetailFragment.newInstance(wordStr, wordId);
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-
+                transaction.setCustomAnimations(R.anim.in, R.anim.out);
                 transaction.replace(R.id.rootViewFav, detailFragment);
                 transaction.addToBackStack("FAV");
                 transaction.commit();
@@ -96,6 +96,8 @@ public class FavFragment extends RootFragment {
         cursor.moveToFirst();
         adapter = new MyCursorAdapter(this.getContext(),cursor,0);
         resultListView.setAdapter(adapter);
+        resultListView.setVisibility(View.VISIBLE);
+        getChildFragmentManager().popBackStackImmediate();
     }
 
 }

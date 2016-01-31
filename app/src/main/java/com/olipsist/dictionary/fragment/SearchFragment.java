@@ -1,5 +1,6 @@
 package com.olipsist.dictionary.fragment;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -10,8 +11,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -93,6 +96,12 @@ public class SearchFragment extends RootFragment {
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
                 adapter.getFilter().filter(String.valueOf(s));
+                if(count>0){
+                    resultListView.setVisibility(View.VISIBLE);
+                }else{
+                    resultListView.setVisibility(View.GONE);
+                }
+                resultListView.smoothScrollToPosition(0);
             }
 
             @Override
@@ -104,12 +113,11 @@ public class SearchFragment extends RootFragment {
         searchEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if(actionId == EditorInfo.IME_ACTION_DONE){
-                        searchEditText.clearFocus();
-                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        return true;
-                    }
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    searchEditText.clearFocus();
+                    hideKeyboard();
+                    return true;
+                }
 
                 return false;
             }
@@ -119,7 +127,7 @@ public class SearchFragment extends RootFragment {
             @Override
             public Cursor runQuery(CharSequence constraint) {
                 if (constraint.toString().isEmpty()) {
-                    return helper.initCursor(db);
+                    return null;
                 }
                 return helper.findWordByString(db, constraint.toString());
             }
@@ -129,10 +137,12 @@ public class SearchFragment extends RootFragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                View contentView = rootView.findViewById(R.id.search_content_view);
-                contentView.setVisibility(View.INVISIBLE);
+                //hide softkeyboard
+//                if (searchEditText != null) {
+//                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+//                }
+                hideKeyboard();
 
                 Cursor cursorTest = adapter.getCursor();
                 cursorTest.moveToPosition(position);
@@ -143,16 +153,18 @@ public class SearchFragment extends RootFragment {
                 DetailFragment detailFragment = DetailFragment.newInstance(word, idWord);
 
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-
+                transaction.setCustomAnimations(R.anim.in, R.anim.out);
                 transaction.replace(R.id.rootViewSearch, detailFragment);
                 transaction.addToBackStack("HOME");
                 transaction.commit();
+            }
+        });
 
-                //hide softkeyboard
-                if (searchEditText != null) {
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-                }
+        resultListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideKeyboard();
+                return false;
             }
         });
 
@@ -162,7 +174,7 @@ public class SearchFragment extends RootFragment {
             public void onClick(View v) {
                 searchEditText.setText("");
                 searchEditText.requestFocus();
-                InputMethodManager imm = (InputMethodManager) inflater.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager)inflater.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
@@ -178,7 +190,10 @@ public class SearchFragment extends RootFragment {
         helper = new MyDbHelper(context);
     }
 
-
+    private void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+    }
 
 
 }

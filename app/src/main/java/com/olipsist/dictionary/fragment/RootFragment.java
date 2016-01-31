@@ -21,4 +21,9 @@ public class RootFragment extends Fragment implements BackPressListener {
         getView().findViewById(R.id.search_content_view).setVisibility(View.VISIBLE);
     }
 
+    public void showContentFavView(){
+        getView().findViewById(R.id.resultListView_Fav).setVisibility(View.VISIBLE);
+    }
+
+
 }

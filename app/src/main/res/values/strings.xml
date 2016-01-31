@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">"Dictionary Eng - Thai"</string>
+    <string name="app_name">"Dictionary English - Thai"</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_setting">SettingActivity</string>
+    <string name="welcome">Type a word in search box.</string>
 </resources>

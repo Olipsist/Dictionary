@@ -5,6 +5,7 @@
     tools:context=".fragment.FavFragment"
     android:id="@+id/rootViewFav">
     <ListView
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/resultListView_Fav"
