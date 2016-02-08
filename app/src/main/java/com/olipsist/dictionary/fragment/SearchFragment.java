@@ -136,11 +136,6 @@ public class SearchFragment extends RootFragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //hide softkeyboard
-//                if (searchEditText != null) {
-//                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-//                }
                 hideKeyboard();
 
                 Cursor cursorTest = adapter.getCursor();
