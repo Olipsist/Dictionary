@@ -16,6 +16,7 @@ public class MyDbHelper extends SQLiteAssetHelper {
  private static final String DATABASE_NAME = "lexitron.db";
  private static final int DATABASE_VERSION = 4;
  private static final String TABLE_NAME = "thai2eng";
+ private String test = "testja";
 
  public MyDbHelper(Context context) {
   super(context, DATABASE_NAME,null, DATABASE_VERSION);
