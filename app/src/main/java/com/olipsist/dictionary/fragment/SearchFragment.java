@@ -101,7 +101,6 @@ public class SearchFragment extends RootFragment {
                 }else{
                     resultListView.setVisibility(View.GONE);
                 }
-                resultListView.smoothScrollToPosition(0);
             }
 
             @Override
@@ -129,7 +128,7 @@ public class SearchFragment extends RootFragment {
                 if (constraint.toString().isEmpty()) {
                     return null;
                 }
-                return helper.findWordByString(db, constraint.toString());
+                return helper.findWordByString(db, constraint.toString().trim());
             }
         });
 
