@@ -14,7 +14,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 public class MyDbHelper extends SQLiteAssetHelper {
 
  private static final String DATABASE_NAME = "lexitron.db";
- private static final int DATABASE_VERSION = 5;
+ private static final int DATABASE_VERSION = 4;
  private static final String TABLE_NAME = "thai2eng";
 
  public MyDbHelper(Context context) {
