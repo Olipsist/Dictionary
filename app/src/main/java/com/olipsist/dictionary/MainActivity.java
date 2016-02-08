@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements DetailFragment.On
     final static int INTENT_CHECK_TTS = 0;
     private FragmentPageAdapter adapter;
     private FloatingActionButton fab;
-    private String test = "test";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
